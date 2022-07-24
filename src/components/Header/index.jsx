@@ -1,39 +1,48 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 import Button from '@mui/material/Button';
 
 import styles from './Header.module.scss';
 import Container from '@mui/material/Container';
+import { logout, selectIsAuth } from '../../redux/slices/auth';
 
 export const Header = () => {
-  const isAuth = false;
+  const isAuth = useSelector(selectIsAuth);
+  const dispatch = useDispatch();
 
-  const onClickLogout = () => {};
+  const onClickLogout = () => {
+    if (window.confirm('Are you sure you want to logout?')) {
+      dispatch(logout());
+      window.localStorage.removeItem('token');
+    }
+  };
 
   return (
     <div className={styles.root}>
       <Container maxWidth="lg">
         <div className={styles.inner}>
-          <a className={styles.logo} href="/">
+          <Link className={styles.logo} to="/">
             <div>ARCHAKOV BLOG</div>
-          </a>
+          </Link>
           <div className={styles.buttons}>
             {isAuth ? (
               <>
-                <a href="/posts/create">
-                  <Button variant="contained">Написать статью</Button>
-                </a>
+                <Link to="/add-post">
+                  <Button variant="contained">Add post</Button>
+                </Link>
                 <Button onClick={onClickLogout} variant="contained" color="error">
                   Выйти
                 </Button>
               </>
             ) : (
               <>
-                <a href="/login">
-                  <Button variant="outlined">Войти</Button>
-                </a>
-                <a href="/register">
-                  <Button variant="contained">Создать аккаунт</Button>
-                </a>
+                <Link to="/login">
+                  <Button variant="outlined">Login</Button>
+                </Link>
+                <Link to="/register">
+                  <Button variant="contained">Create account</Button>
+                </Link>
               </>
             )}
           </div>
